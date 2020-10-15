@@ -25,20 +25,23 @@ class _TestRotationState extends State<TestRotation>
   @override
   void initState() {
     _controller =
-        AnimationController(duration: Duration(milliseconds: 900), vsync: this);
+        AnimationController(duration: Duration(seconds: 2), vsync: this);
     rotation = Tween<double>(begin: 0.0, end: 180)
         .animate(CurvedAnimation(curve: Curves.linear, parent: _controller));
-    translation = Tween<double>(begin: 0.0, end: 180.0)
+    translation = Tween<double>(begin: 0.0, end: 190.0)
         .animate(CurvedAnimation(curve: Curves.easeIn, parent: _controller));
+    _controller.repeat();
     super.initState();
   }
 
+// X1 = X + R * Math.sin(ANGLE);
+// 		Y1 = Y +  0.3 * R * Math.cos(ANGLE);
   _buildButton(double angle) {
     final rad = Matrux.radians(angle);
     return Transform(
       transform: Matrix4.identity()
-        ..translate(
-            (translation.value) * cos(rad), (translation.value) * sin(rad)),
+        ..translate(1.4 * (translation.value) * sin(rad),
+            0.1 * (translation.value) * cos(rad)),
       child: Container(
         width: 30,
         height: 30,
@@ -85,17 +88,16 @@ class _TestRotationState extends State<TestRotation>
                 alignment: Alignment.bottomCenter,
                 children: [
                   Container(
-                    width: 220,
-                    height: 150,
+                    height: 160,
                   ),
                   Positioned(
-                    left: 80,
+                    left: 50,
                     child: AnimatedBuilder(
                       animation: _controller,
                       builder: (context, builder) {
                         return Transform.rotate(
                           angle: Matrux.radians(rotation.value),
-                          child: _buildButton(-180),
+                          child: _buildButton(-70),
                         );
                       },
                     ),
@@ -105,19 +107,6 @@ class _TestRotationState extends State<TestRotation>
                         alignment: Alignment.bottomCenter,
                         child: SunPosition()),
                   ),
-                  Positioned(
-                      child: InkWell(
-                    child: Icon(Icons.burst_mode),
-                    onTap: () {
-                      if (index >= 1.0) {
-                        index -= 0.1;
-                        _controller.animateBack(index);
-                      } else {
-                        index += 0.1;
-                        _controller.animateTo(index);
-                      }
-                    },
-                  ))
                 ],
               ),
             ),

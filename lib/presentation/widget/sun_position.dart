@@ -14,7 +14,7 @@ class SunPosition extends StatelessWidget {
       child: Container(
         alignment: Alignment.bottomCenter,
         width: MediaQuery.of(context).size.width / 2,
-        height: 120,
+        height: 150,
         child: FlareCacheBuilder([asset],
             builder: (BuildContext context, bool isWarm) {
           return !isWarm
