@@ -1,16 +1,23 @@
 import 'dart:math';
+import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_weather_app/presentation/widget/animated_text.dart';
+import 'package:flutter_weather_app/presentation/widget/test_bloc.dart';
+import 'package:provider/provider.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
 class CustomDrawer extends StatefulWidget {
   final Widget menu;
   final Widget body;
-
-  const CustomDrawer({Key key, @required this.menu, @required this.body})
+  final GlobalKey myKey;
+  const CustomDrawer(
+      {Key key, @required this.menu, @required this.body, this.myKey})
       : super(key: key);
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
@@ -19,35 +26,20 @@ class CustomDrawer extends StatefulWidget {
 class _CustomDrawerState extends State<CustomDrawer>
     with SingleTickerProviderStateMixin {
   bool isCollapsed = true;
-  double screenWidth, screenHeight;
   final Duration duration = const Duration(milliseconds: 100);
   AnimationController _controller;
-  AnimationController _sliverController;
   Animation<double> _scaleAnimation;
   Animation<Offset> _slideAnimation;
   Animation<Offset> _slideAnimation2;
   ScrollController _scrollController;
-  bool lastStatus = true;
-  double height = 200;
 
-  void _scrollListener() {
-    if (_isShrink != lastStatus) {
-      setState(() {
-        lastStatus = _isShrink;
-      });
-    }
-  }
-
-  bool get _isShrink {
-    return _scrollController.hasClients &&
-        _scrollController.offset > (height - kToolbarHeight);
-  }
-
+  List<String> str;
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController()..addListener(_scrollListener);
 
+    _scrollController = ScrollController()..addListener(() {});
+    str = ['UNITED KINGDOM', 'London', 'California'];
     _controller = AnimationController(
       vsync: this,
       duration: duration,
@@ -63,18 +55,15 @@ class _CustomDrawerState extends State<CustomDrawer>
 
   @override
   void dispose() {
-    _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     _controller.dispose();
     super.dispose();
   }
 
+  static const double kExpandedHeight = 160.0;
+
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    screenHeight = size.height;
-    screenWidth = size.width;
-
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -86,12 +75,19 @@ class _CustomDrawerState extends State<CustomDrawer>
   }
 
   collapseCustomDrawer() {
+    final bb = Provider.of<TestBloc>(context, listen: false);
+
     setState(
       () {
         if (isCollapsed)
           _controller.forward();
         else
           _controller.reverse();
+
+        if (isCollapsed)
+          bb.setter(['Sat 5', 'Tashkent', 'UNITED KINGDOM']);
+        else
+          bb.setter(['Tue 5', 'Tashkentdd', 'Uzbekistan']);
 
         isCollapsed = !isCollapsed;
       },
@@ -167,91 +163,20 @@ class _CustomDrawerState extends State<CustomDrawer>
                           (BuildContext context, bool innerBoxIsScrolled) {
                         return [
                           SliverAppBar(
-                            expandedHeight: height,
+                            expandedHeight: kExpandedHeight,
                             pinned: true,
-                            elevation: 0,
-                            flexibleSpace: FlexibleSpaceBar(
-                              centerTitle: _isShrink,
-                              titlePadding: _isShrink
-                                  ? EdgeInsets.only(
-                                      left: 50.0,
-                                    )
-                                  : EdgeInsets.only(left: 16.0, right: 16.0),
-                              title: _isShrink
-                                  ? SizedBox.shrink()
-                                  : SingleChildScrollView(
-                                      child: AnimatedBuilder(
-                                          animation: _sliverController,
-                                          builder: (context, builder) {
-                                            return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'LONDON,',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1,
-                                                ),
-                                                Text(
-                                                  'United Kingdom',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1,
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  'Sat,6 Aug',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText2,
-                                                ),
-                                              ],
-                                            );
-                                          }),
-                                    ),
-                            ),
-                            forceElevated: innerBoxIsScrolled,
+                            elevation: 21,
+                            bottom: PreferredSize(
+                                preferredSize: Size.fromHeight(35),
+                                child: AnimatedText(
+                                  scrollController: _scrollController,
+                                )),
                             automaticallyImplyLeading: true,
-                            centerTitle: true,
-                            title: _isShrink
-                                ? Row(
-                                    children: [
-                                      Text(
-                                        'LONDON,',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1,
-                                      ),
-                                      Text(
-                                        'United Kingdom',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        'Sat,6 Aug',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2,
-                                      ),
-                                    ],
-                                  )
-                                : SizedBox.shrink(),
                             leading: IconButton(
-                              splashColor: Theme.of(context).shadowColor,
-                              splashRadius: 20,
-                              onPressed: () => collapseCustomDrawer(),
-                              icon: SvgPicture.asset(
-                                'assets/images/drawer.svg',
-                                height: 10,
-                              ),
-                            ),
+                                splashColor: Theme.of(context).shadowColor,
+                                splashRadius: 20,
+                                onPressed: () => collapseCustomDrawer(),
+                                icon: Icon(Entypo.menu)),
                           )
                         ];
                       },

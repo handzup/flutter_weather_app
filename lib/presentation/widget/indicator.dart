@@ -36,7 +36,7 @@ class Indicator extends StatelessWidget {
                   : FlareActor.asset(
                       asset,
                       shouldClip: true,
-                      animation: '02d',
+                      animation: animationName,
                       fit: BoxFit.contain,
                     );
             })),

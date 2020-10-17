@@ -6,8 +6,9 @@ import 'package:flare_flutter/provider/asset_flare.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_weather_app/presentation/widget/sun_position.dart';
 import 'package:vector_math/vector_math.dart' as Matrux;
+
+import 'sun_position.dart';
 
 class TestRotation extends StatefulWidget {
   @override
