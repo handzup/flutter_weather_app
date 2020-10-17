@@ -22,35 +22,36 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
+    return ListView(
+      shrinkWrap: true,
+      physics: BouncingScrollPhysics(),
+      children: [
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'LONDON,',
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  Text(
-                    'United Kingdom',
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'Sat,6 Aug',
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       Text(
+            //         'LONDON,',
+            //         style: Theme.of(context).textTheme.bodyText1,
+            //       ),
+            //       Text(
+            //         'United Kingdom',
+            //         style: Theme.of(context).textTheme.bodyText1,
+            //       ),
+            //       SizedBox(
+            //         height: 10,
+            //       ),
+            //       Text(
+            //         'Sat,6 Aug',
+            //         style: Theme.of(context).textTheme.bodyText2,
+            //       ),
+            //     ],
+            //   ),
+            // ),
             SizedBox(
               height: 20,
             ),
@@ -137,9 +138,10 @@ class _HomeState extends State<Home> {
               height: 20,
             ),
             TestRotation(),
+            TestRotation(),
           ],
-        ),
-      ),
+        )
+      ],
     );
   }
 }

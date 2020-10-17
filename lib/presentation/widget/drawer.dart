@@ -20,16 +20,38 @@ class _CustomDrawerState extends State<CustomDrawer>
     with SingleTickerProviderStateMixin {
   bool isCollapsed = true;
   double screenWidth, screenHeight;
-  final Duration duration = const Duration(milliseconds: 200);
+  final Duration duration = const Duration(milliseconds: 100);
   AnimationController _controller;
+  AnimationController _sliverController;
   Animation<double> _scaleAnimation;
   Animation<Offset> _slideAnimation;
   Animation<Offset> _slideAnimation2;
+  ScrollController _scrollController;
+  bool lastStatus = true;
+  double height = 200;
+
+  void _scrollListener() {
+    if (_isShrink != lastStatus) {
+      setState(() {
+        lastStatus = _isShrink;
+      });
+    }
+  }
+
+  bool get _isShrink {
+    return _scrollController.hasClients &&
+        _scrollController.offset > (height - kToolbarHeight);
+  }
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: duration);
+    _scrollController = ScrollController()..addListener(_scrollListener);
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: duration,
+    );
     _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(_controller);
 
     _slideAnimation = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
@@ -41,6 +63,8 @@ class _CustomDrawerState extends State<CustomDrawer>
 
   @override
   void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -137,15 +161,88 @@ class _CustomDrawerState extends State<CustomDrawer>
                         ? BorderRadius.all(Radius.circular(0))
                         : BorderRadius.all(Radius.circular(20)),
                     child: NestedScrollView(
+                      controller: _scrollController,
                       physics: NeverScrollableScrollPhysics(),
                       headerSliverBuilder:
                           (BuildContext context, bool innerBoxIsScrolled) {
                         return [
                           SliverAppBar(
-                            automaticallyImplyLeading: false,
-                            centerTitle: false,
-                            titleSpacing: 0,
+                            expandedHeight: height,
+                            pinned: true,
+                            elevation: 0,
+                            flexibleSpace: FlexibleSpaceBar(
+                              centerTitle: _isShrink,
+                              titlePadding: _isShrink
+                                  ? EdgeInsets.only(
+                                      left: 50.0,
+                                    )
+                                  : EdgeInsets.only(left: 16.0, right: 16.0),
+                              title: _isShrink
+                                  ? SizedBox.shrink()
+                                  : SingleChildScrollView(
+                                      child: AnimatedBuilder(
+                                          animation: _sliverController,
+                                          builder: (context, builder) {
+                                            return Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'LONDON,',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1,
+                                                ),
+                                                Text(
+                                                  'United Kingdom',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1,
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  'Sat,6 Aug',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2,
+                                                ),
+                                              ],
+                                            );
+                                          }),
+                                    ),
+                            ),
                             forceElevated: innerBoxIsScrolled,
+                            automaticallyImplyLeading: true,
+                            centerTitle: true,
+                            title: _isShrink
+                                ? Row(
+                                    children: [
+                                      Text(
+                                        'LONDON,',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1,
+                                      ),
+                                      Text(
+                                        'United Kingdom',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1,
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        'Sat,6 Aug',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2,
+                                      ),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
                             leading: IconButton(
                               splashColor: Theme.of(context).shadowColor,
                               splashRadius: 20,
