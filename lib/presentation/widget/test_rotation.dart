@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math.dart' as Matrux;
 
+import 'gradient_card.dart';
 import 'sun_position.dart';
 
 class TestRotation extends StatefulWidget {
@@ -35,8 +36,6 @@ class _TestRotationState extends State<TestRotation>
     super.initState();
   }
 
-// X1 = X + R * Math.sin(ANGLE);
-// 		Y1 = Y +  0.3 * R * Math.cos(ANGLE);
   _buildButton(double angle) {
     final rad = Matrux.radians(angle);
     return Transform(
@@ -67,20 +66,7 @@ class _TestRotationState extends State<TestRotation>
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
-          width: MediaQuery.of(context).size.width - 40,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                  color: Color(0xFF5594fe), blurRadius: 12, spreadRadius: 1)
-            ],
-            gradient: LinearGradient(
-                colors: [Color(0xFFa9c9ff), Color(0xFF5594fe)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter),
-            border: Border.all(color: Colors.grey[200], width: 0.5),
-          ),
+        child: GradientCard(
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),

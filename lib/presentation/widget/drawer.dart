@@ -1,14 +1,11 @@
 import 'dart:math';
-import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_weather_app/presentation/widget/animated_text.dart';
-import 'package:flutter_weather_app/presentation/widget/test_bloc.dart';
-import 'package:provider/provider.dart';
+
+import 'animated_text.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
@@ -26,7 +23,7 @@ class CustomDrawer extends StatefulWidget {
 class _CustomDrawerState extends State<CustomDrawer>
     with SingleTickerProviderStateMixin {
   bool isCollapsed = true;
-  final Duration duration = const Duration(milliseconds: 100);
+  final Duration duration = const Duration(milliseconds: 150);
   AnimationController _controller;
   Animation<double> _scaleAnimation;
   Animation<Offset> _slideAnimation;
@@ -39,12 +36,13 @@ class _CustomDrawerState extends State<CustomDrawer>
     super.initState();
 
     _scrollController = ScrollController()..addListener(() {});
-    str = ['UNITED KINGDOM', 'London', 'California'];
+    str = ['Tue 5', 'Tashkent', 'Uzbekistan'];
     _controller = AnimationController(
       vsync: this,
       duration: duration,
     );
-    _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(_controller);
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.8)
+        .animate(CurvedAnimation(curve: Curves.ease, parent: _controller));
 
     _slideAnimation = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
         .animate(_controller);
@@ -75,19 +73,12 @@ class _CustomDrawerState extends State<CustomDrawer>
   }
 
   collapseCustomDrawer() {
-    final bb = Provider.of<TestBloc>(context, listen: false);
-
     setState(
       () {
         if (isCollapsed)
           _controller.forward();
         else
           _controller.reverse();
-
-        if (isCollapsed)
-          bb.setter(['Sat 5', 'Tashkent', 'UNITED KINGDOM']);
-        else
-          bb.setter(['Tue 5', 'Tashkentdd', 'Uzbekistan']);
 
         isCollapsed = !isCollapsed;
       },
@@ -167,7 +158,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                             pinned: true,
                             elevation: 21,
                             bottom: PreferredSize(
-                                preferredSize: Size.fromHeight(35),
+                                preferredSize: Size.fromHeight(40),
                                 child: AnimatedText(
                                   scrollController: _scrollController,
                                 )),

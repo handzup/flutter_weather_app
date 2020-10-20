@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_weather_app/presentation/widget/test_bloc.dart';
+import '../presentation/widget/test_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../core/theme.dart';
@@ -16,22 +16,21 @@ class _ApplicationState extends State<Application> {
   GlobalKey myKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: Styles.themeData(false, context),
-      home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<TestBloc>(
-            create: (context) => TestBloc(),
-          )
-        ],
-        child: CustomDrawer(
-          myKey: myKey,
-          body: Home(mykey: myKey),
-          menu: Menu(),
-        ),
-      ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<TestBloc>(
+          create: (context) => TestBloc(),
+        )
+      ],
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: Styles.themeData(false, context),
+          home: CustomDrawer(
+            myKey: myKey,
+            body: Home(mykey: myKey),
+            menu: Menu(),
+          )),
     );
   }
 }

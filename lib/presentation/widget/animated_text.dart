@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_weather_app/presentation/widget/test_bloc.dart';
+import 'test_bloc.dart';
 import 'package:provider/provider.dart';
 
 class AnimatedText extends StatefulWidget {
@@ -24,8 +24,10 @@ class AnimatedText extends StatefulWidget {
 }
 
 class _AnimatedTextState extends State<AnimatedText> {
-  static const double kExpandedHeight = 160.0;
+  static const double kExpandedHeight = 150.0;
   ScrollController scrollController;
+  double offset = 0.0;
+
   static const double kInitialSize = 20.0;
   List<String> list = ['UNITED KINGDOM', 'London', 'California'];
   static const double kFinalSize = 18.0;
@@ -40,7 +42,9 @@ class _AnimatedTextState extends State<AnimatedText> {
   @override
   void initState() {
     scrollController.addListener(() {
-      setState(() {});
+      setState(() {
+        offset = scrollController.offset;
+      });
       if (scrollController.offset >=
           scrollController.position.maxScrollExtent) {
         setState(() {
@@ -119,14 +123,14 @@ class _AnimatedTextState extends State<AnimatedText> {
 
   @override
   Widget build(BuildContext context) {
-    double size = !scrollController.hasClients || scrollController.offset == 0
+    double size = !scrollController.hasClients || offset == 0
         ? 20.0
         : 20 -
             math.min(
                 2.0,
                 (2 /
                     kExpandedHeight *
-                    math.min(scrollController.offset, kExpandedHeight) *
+                    math.min(offset, kExpandedHeight) *
                     2.2));
     double t = (size - kInitialSize) / (kFinalSize - kInitialSize);
     return Padding(

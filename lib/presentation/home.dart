@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../core/svg_icons.dart';
 import 'widget/indicator.dart';
 import 'widget/test_rotation.dart';
 import 'widget/today_weather.dart';
@@ -31,9 +32,6 @@ class _HomeState extends State<Home> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 20,
-            ),
             Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -96,18 +94,21 @@ class _HomeState extends State<Home> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Indicator(
-                      animationName: 'wind',
-                      color: Colors.green[200],
+                      iconColor: Colors.green,
+                      iconName: SvgKeys.wi_night_alt_cloudy_windy,
+                      backgrpundColor: Colors.green[100].withOpacity(.3),
                       stat: '90km/h',
                     ),
                     Indicator(
-                      animationName: 'wind',
-                      color: Colors.red[200],
+                      iconColor: Colors.green,
+                      iconName: SvgKeys.wi_night_alt_cloudy_windy,
+                      backgrpundColor: Colors.red[200].withOpacity(.3),
                       stat: '90km/h',
                     ),
                     Indicator(
-                      animationName: '01d',
-                      color: Colors.blue[200],
+                      iconColor: Colors.green,
+                      iconName: SvgKeys.wi_night_alt_cloudy_windy,
+                      backgrpundColor: Colors.blue[200].withOpacity(.3),
                       stat: '90km/h',
                     ),
                   ],
@@ -121,7 +122,6 @@ class _HomeState extends State<Home> {
             SizedBox(
               height: 20,
             ),
-            TestRotation(),
             TestRotation(),
           ],
         )
