@@ -4,6 +4,11 @@ import 'package:flare_flutter/provider/asset_flare.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_weather_app/core/next_screen.dart';
+import 'package:flutter_weather_app/presentation/next_7_days.dart';
+
+import '../search_page.dart';
+import '../settings_page.dart';
 
 class Menu extends StatelessWidget {
   static final asset =
@@ -25,7 +30,10 @@ class Menu extends StatelessWidget {
             SizedBox(
               width: 10,
             ),
-            Text("Add City", style: Theme.of(context).textTheme.bodyText1),
+            GestureDetector(
+                onTap: () => upToDown(context, SearchPage()),
+                child: Text("Add City",
+                    style: Theme.of(context).textTheme.bodyText1)),
           ],
         ),
         SizedBox(height: 20),
@@ -35,7 +43,11 @@ class Menu extends StatelessWidget {
             SizedBox(
               width: 10,
             ),
-            Text("Settings", style: Theme.of(context).textTheme.bodyText1),
+            GestureDetector(
+              onTap: () => downToUp(context, SettingsPage()),
+              child: Text("Settings",
+                  style: Theme.of(context).textTheme.bodyText1),
+            ),
           ],
         ),
         Spacer(

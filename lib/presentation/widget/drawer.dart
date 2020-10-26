@@ -4,7 +4,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_weather_app/presentation/widget/page_view_indicator.dart';
 
+import '../home.dart';
 import 'animated_text.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
@@ -12,10 +14,11 @@ final Color backgroundColor = Color(0xFF4A4A58);
 class CustomDrawer extends StatefulWidget {
   final Widget menu;
   final Widget body;
-  final GlobalKey myKey;
-  const CustomDrawer(
-      {Key key, @required this.menu, @required this.body, this.myKey})
-      : super(key: key);
+  const CustomDrawer({
+    Key key,
+    @required this.menu,
+    @required this.body,
+  }) : super(key: key);
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
 }
@@ -29,7 +32,6 @@ class _CustomDrawerState extends State<CustomDrawer>
   Animation<Offset> _slideAnimation;
   Animation<Offset> _slideAnimation2;
   ScrollController _scrollController;
-
   List<String> str;
   @override
   void initState() {
@@ -41,13 +43,13 @@ class _CustomDrawerState extends State<CustomDrawer>
       vsync: this,
       duration: duration,
     );
-    _scaleAnimation = Tween<double>(begin: 1, end: 0.8)
-        .animate(CurvedAnimation(curve: Curves.ease, parent: _controller));
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(
+        CurvedAnimation(curve: Curves.decelerate, parent: _controller));
 
     _slideAnimation = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
         .animate(_controller);
 
-    _slideAnimation2 = Tween<Offset>(begin: Offset(0, 0), end: Offset(0.5, 0))
+    _slideAnimation2 = Tween<Offset>(begin: Offset(0, 0), end: Offset(0.65, 0))
         .animate(_controller);
   }
 
@@ -59,14 +61,14 @@ class _CustomDrawerState extends State<CustomDrawer>
   }
 
   static const double kExpandedHeight = 160.0;
-
+  final _currentPageNotifier = ValueNotifier<int>(0);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: <Widget>[
           menu(context),
-          dashboard(context),
+          dashboard(context, _currentPageNotifier),
         ],
       ),
     );
@@ -89,7 +91,7 @@ class _CustomDrawerState extends State<CustomDrawer>
     return SlideTransition(
       position: _slideAnimation,
       child: Padding(
-        padding: const EdgeInsets.only(left: 16.0),
+        padding: const EdgeInsets.only(left: 60.0),
         child: Align(
           alignment: Alignment.centerLeft,
           child: widget.menu,
@@ -98,7 +100,7 @@ class _CustomDrawerState extends State<CustomDrawer>
     );
   }
 
-  Widget dashboard(context) {
+  Widget dashboard(context, _currentPageNotifier) {
     return SlideTransition(
       position: _slideAnimation2,
       child: ScaleTransition(
@@ -156,13 +158,20 @@ class _CustomDrawerState extends State<CustomDrawer>
                           SliverAppBar(
                             expandedHeight: kExpandedHeight,
                             pinned: true,
-                            elevation: 21,
+                            elevation: 1,
+                            forceElevated: innerBoxIsScrolled,
+                            floating: true,
+                            centerTitle: true,
+                            automaticallyImplyLeading: false,
+                            title: CirclePageIndicator(
+                              currentPageNotifier: _currentPageNotifier,
+                              itemCount: 3,
+                            ),
                             bottom: PreferredSize(
-                                preferredSize: Size.fromHeight(40),
+                                preferredSize: Size.fromHeight(kToolbarHeight),
                                 child: AnimatedText(
                                   scrollController: _scrollController,
                                 )),
-                            automaticallyImplyLeading: true,
                             leading: IconButton(
                                 splashColor: Theme.of(context).shadowColor,
                                 splashRadius: 20,
@@ -171,10 +180,17 @@ class _CustomDrawerState extends State<CustomDrawer>
                           )
                         ];
                       },
-                      body: widget.body,
+                      body: Home(
+                        currentPageNotifier: _currentPageNotifier,
+                      ),
                     ),
                   ),
                 ),
+                !isCollapsed
+                    ? GestureDetector(
+                        onTap: () => collapseCustomDrawer(),
+                      )
+                    : SizedBox.shrink(),
               ])),
         ),
       ),

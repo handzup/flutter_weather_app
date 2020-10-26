@@ -13,7 +13,6 @@ class Application extends StatefulWidget {
 }
 
 class _ApplicationState extends State<Application> {
-  GlobalKey myKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -27,8 +26,7 @@ class _ApplicationState extends State<Application> {
           title: 'Flutter Demo',
           theme: Styles.themeData(false, context),
           home: CustomDrawer(
-            myKey: myKey,
-            body: Home(mykey: myKey),
+            body: Home(),
             menu: Menu(),
           )),
     );

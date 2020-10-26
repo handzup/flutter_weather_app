@@ -4,6 +4,7 @@ import 'package:flare_flutter/provider/asset_flare.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../core/svg_icons.dart';
 import 'widget/indicator.dart';
@@ -11,15 +12,36 @@ import 'widget/test_rotation.dart';
 import 'widget/today_weather.dart';
 
 class Home extends StatefulWidget {
-  final GlobalKey mykey;
-
-  const Home({Key key, @required this.mykey}) : super(key: key);
+  ValueNotifier currentPageNotifier = ValueNotifier<int>(0);
+  Home({Key key, this.currentPageNotifier}) : super(key: key);
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  String name = '02d';
+  final _pageController = PageController();
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      itemCount: 3,
+      controller: _pageController,
+      onPageChanged: (int index) {
+        widget.currentPageNotifier.value = index;
+      },
+      itemBuilder: (context, int index) {
+        return FirstPage();
+      },
+    );
+  }
+}
+
+class FirstPage extends StatefulWidget {
+  @override
+  _FirstPageState createState() => _FirstPageState();
+}
+
+class _FirstPageState extends State<FirstPage> {
   final asset =
       AssetFlare(bundle: rootBundle, name: "assets/flare/weather.flr");
 
@@ -37,7 +59,6 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Column(
-                  key: widget.mykey,
                   children: [
                     Text(
                       'Today',

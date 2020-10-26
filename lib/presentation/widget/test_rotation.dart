@@ -36,6 +36,12 @@ class _TestRotationState extends State<TestRotation>
     super.initState();
   }
 
+  @override
+  dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   _buildButton(double angle) {
     final rad = Matrux.radians(angle);
     return Transform(

@@ -75,7 +75,9 @@ class _AnimatedTextState extends State<AnimatedText> {
 
   Widget c() {
     return Padding(
-      padding: const EdgeInsets.only(right: 16.0),
+      padding: const EdgeInsets.only(
+        right: 16.0,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -95,6 +97,7 @@ class _AnimatedTextState extends State<AnimatedText> {
                       );
               })),
           Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('20',
                   style: Theme.of(context)
@@ -133,17 +136,23 @@ class _AnimatedTextState extends State<AnimatedText> {
                     math.min(offset, kExpandedHeight) *
                     2.2));
     double t = (size - kInitialSize) / (kFinalSize - kInitialSize);
-    return Padding(
-      padding: const EdgeInsets.only(left: 18.0, bottom: 10),
-      child: Row(
-        children: [
-          Expanded(child: buildAppBarBottom(size, list, t)),
-          visble
-              ? c()
-              : SizedBox(
-                  height: 30,
-                )
-        ],
+    return Container(
+      height: kToolbarHeight,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 18.0,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(child: buildAppBarBottom(size, list, t)),
+            visble
+                ? c()
+                : SizedBox(
+                    height: 30,
+                  )
+          ],
+        ),
       ),
     );
   }
